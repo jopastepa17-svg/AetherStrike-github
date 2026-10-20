@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OMNIX — Больше, чем мессенджер. Твоя вселенная общения.</title>
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#020617;
+  --panel:rgba(16,24,52,0.72);
+  --panel2:rgba(22,32,68,0.64);
+  --glass:rgba(255,255,255,0.07);
+  --glass2:rgba(255,255,255,0.045);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.12);
+  --text:#e6ecff;
+  --muted:#8a9cc4;
+  --muted2:#6b7da6;
+  --primary:#4f67ff;
+  --primary2:#7c5cff;
+  --accent:#6ea8ff;
+  --online:#22c55e;
+  --radius:24px;
+  --radius2:18px;
+}
+html,body{height:100%;background:#020a1e;color:var(--text);font-family:'Manrope',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden}
+body{position:relative;min-height:100vh}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-3;
+  background:
+    radial-gradient(900px 600px at 70% 2%, rgba(87,115,255,0.28) 0%, transparent 60%),
+    radial-gradient(900px 700px at 20% 15%, rgba(124,92,255,0.22) 0%, transparent 65%),
+    radial-gradient(1200px 800px at 50% 115%, #0b1b4d 0%, transparent 60%),
+    linear-gradient(180deg, #020617 0%, #050d2e 45%, #07133c 100%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-2;opacity:0.55;pointer-events:none;
+  background:
+    radial-gradient(2px 2px at 12% 18%, #fff 50%, transparent 60%),
+    radial-gradient(1.6px 1.6px at 22% 32%, #fff 50%, transparent 60%),
+    radial-gradient(1.2px 1.2px at 35% 14%, #fff 50%, transparent 60%),
+    radial-gradient(1.8px 1.8px at 48% 22%, #cfe0ff 50%, transparent 60%),
+    radial-gradient(1.4px 1.4px at 62% 18%, #fff 50%, transparent 60%),
+    radial-gradient(1.1px 1.1px at 78% 28%, #fff 50%, transparent 60%),
+    radial-gradient(1.9px 1.9px at 88% 12%, #fff 50%, transparent 60%),
+    radial-gradient(1px 1px at 10% 55%, #fff 50%, transparent 60%),
+    radial-gradient(1.3px 1.3px at 28% 62%, #fff 50%, transparent 60%),
+    radial-gradient(1.7px 1.7px at 42% 70%, #fff 50%, transparent 60%),
+    radial-gradient(1px 1px at 68% 52%, #fff 50%, transparent 60%),
+    radial-gradient(1.5px 1.5px at 82% 48%, #fff 50%, transparent 60%),
+    radial-gradient(1.2px 1.2px at 92% 66%, #fff 50%, transparent 60%);
+}
+.planet{
+  position:fixed;left:50%;top:-180px;width:1100px;height:1100px;transform:translateX(-35%);
+  z-index:-1;pointer-events:none;opacity:0.95;
+  background:
+    radial-gradient(circle at 35% 35%, #e6f0ff 0%, #a9c4ff 12%, #5b7bff 22%, #1a2a7a 42%, #0a1030 62%, transparent 62%),
+    radial-gradient(ellipse at 50% 50%, rgba(110,168,255,0.45) 0%, transparent 70%);
+  filter:blur(0.3px);
+  mask: radial-gradient(circle at 50% 50%, black 58%, transparent 61%);
+}
+.planet::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  background: radial-gradient(ellipse at 20% 20%, rgba(255,255,255,0.22), transparent 35%);
+}
+.glow{
+  position:fixed;left:48%;top:4%;width:180px;height:180px;transform:translate(-50%,0);
+  background:radial-gradient(circle, #fff 0%, #8fb8ff 18%, transparent 70%);
+  filter:blur(18px);opacity:0.9;z-index:-1;pointer-events:none;
+}
+/* header */
+.topbar{
+  max-width:1440px;margin:0 auto;padding:18px 20px 6px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:20px
+}
+.brand h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:46px;letter-spacing:0.04em;line-height:1;
+  background:linear-gradient(90deg, #8fb5ff 0%, #aeb8ff 18%, #c9b6ff 36%, #ff9bd8 56%, #8fb5ff 78%, #ffffff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 22px rgba(108,123,255,0.45));
+}
+.brand p{margin-top:4px;color:#9bb0d9;letter-spacing:0.02em;font-size:14px;font-weight:500}
+.topbar__center{
+  text-align:right;padding-top:8px;max-width:320px
+}
+.topbar__center p{color:#b9c9ef;font-size:14px;line-height:1.35}
+.topbar__center p strong{color:#e6ecff;font-weight:600}
+@media(max-width:900px){
+  .topbar{flex-direction:column;gap:4px;padding:14px 14px 2px}
+  .topbar__center{text-align:left;max-width:none}
+  .brand h1{font-size:34px}
+}
+/* app shell */
+.shell{
+  max-width:1440px;margin:14px auto 18px;padding:0 14px;
+  display:grid;grid-template-columns:380px 1.12fr 360px;gap:14px;align-items:stretch
+}
+@media(max-width:1220px){.shell{grid-template-columns:360px 1fr}}
+@media(max-width:860px){.shell{grid-template-columns:1fr;max-width:500px}}
+.panel{
+  background:var(--panel);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 18px 50px rgba(0,8,40,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.left{
+  display:flex;flex-direction:column;min-height:680px;height:78vh;max-height:760px;position:relative
+}
+@media(max-width:860px){.left{min-height:auto;height:auto;max-height:none}}
+.left__head{
+  padding:16px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px
+}
+.left__head .logo-mini{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.06em;font-size:20px;
+  background:linear-gradient(90deg,#9fb8ff,#c9b6ff);-webkit-background-clip:text;color:transparent
+}
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);color:#cfe0ff;cursor:pointer;transition:.2s
+}
+.icon-btn:hover{background:rgba(255,255,255,0.1);transform:translateY(-1px)}
+.icon-btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));border-color:transparent;color:#fff;box-shadow:0 8px 22px rgba(79,103,255,0.45)}
+.search-wrap{padding:0 16px 10px}
+.search{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:rgba(8,15,38,0.72);border:1px solid var(--border);border-radius:14px
+}
+.search input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-size:13.5px}
+.search input::placeholder{color:var(--muted2)}
+.filters{
+  display:flex;gap:8px;padding:0 16px 12px;overflow:auto;scrollbar-width:none
+}
+.filters::-webkit-scrollbar{display:none}
+.filter{
+  white-space:nowrap;padding:7px 12px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;background:rgba(255,255,255,0.05);color:var(--muted);transition:.2s
+}
+.filter.active{background:#0e1a3f;color:#fff;border-color:rgba(111,143,255,0.45);box-shadow:0 4px 16px rgba(79,103,255,0.22)}
+.filter:hover{background:rgba(255,255,255,0.08)}
+.chat-list{flex:1;overflow:auto;padding:4px 8px 8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.12) transparent}
+.chat-item{
+  display:flex;gap:12px;align-items:center;padding:10px 10px;border-radius:16px;cursor:pointer;transition:.18s;border:1px solid transparent
+}
+.chat-item:hover{background:rgba(255,255,255,0.045);border-color:rgba(255,255,255,0.06)}
+.chat-item.active{background:rgba(79,103,255,0.14);border-color:rgba(111,143,255,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.06)}
+.avatar{
+  width:44px;height:44px;border-radius:50%;flex:0 0 44px;overflow:hidden;position:relative;background:linear-gradient(135deg,#1a2a6b,#2a3a8a);
+  display:grid;place-items:center;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.08)
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar--small{width:36px;height:36px;flex:0 0 36px}
+.online-dot{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:var(--online);border:2px solid #0d1738;box-shadow:0 0 8px rgba(34,197,94,0.6)}
+.chat-meta{flex:1;min-width:0}
+.chat-meta .name{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-meta .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.chat-meta .typing{color:#7fb5ff;font-style:italic}
+.chat-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.chat-time{font-size:11px;color:var(--muted2)}
+.badge{
+  min-width:20px;height:20px;padding:0 6px;border-radius:20px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#3b82ff,#7c5cff);color:#fff;font-size:11px;font-weight:700;box-shadow:0 4px 12px rgba(79,103,255,0.35)
+}
+.badge.muted{background:rgba(255,255,255,0.08);color:var(--muted);box-shadow:none}
+/* bottom nav */
+.bottom-nav{
+  display:flex;align-items:center;justify-content:space-around;gap:6px;
+  padding:10px 10px 12px;border-top:1px solid var(--border);background:rgba(8,14,37,0.86);backdrop-filter:blur(14px)
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px;border-radius:14px;
+  color:var(--muted);font-size:10px;font-weight:600;cursor:pointer;transition:.2s;border:0;background:transparent
+}
+.nav-btn svg{width:18px;height:18px;opacity:0.9}
+.nav-btn.active{color:#fff}
+.nav-btn.active svg{filter:drop-shadow(0 4px 10px rgba(79,103,255,0.5))}
+.nav-plus{
+  width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,#4f67ff 0%, #7c5cff 55%, #9a6bff 100%);color:#fff;
+  box-shadow:0 10px 26px rgba(79,103,255,0.55), 0 0 22px rgba(124,92,255,0.45);border:2px solid rgba(255,255,255,0.14);cursor:pointer;transition:.2s
+}
+.nav-plus:hover{transform:translateY(-2px) scale(1.03)}
+/* center chat */
+.center{
+  display:flex;flex-direction:column;min-height:680px;height:78vh;max-height:760px;overflow:hidden;position:relative
+}
+@media(max-width:860px){.center{height:72vh;min-height:560px}}
+.chat-bg{
+  position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:var(--radius)
+}
+.chat-bg img{width:100%;height:100%;object-fit:cover;opacity:0.92;filter:saturate(1.1) contrast(1.05) brightness(0.92)}
+.chat-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(2,6,23,0.22) 0%, rgba(2,6,23,0.18) 40%, rgba(2,6,23,0.45) 100%)}
+.chat-bg .mountain{
+  position:absolute;left:0;right:0;bottom:0;height:52%;background:
+    radial-gradient(800px 260px at 18% 100%, #0f1c3a 0%, transparent 70%),
+    radial-gradient(900px 300px at 55% 100%, #0f1e42 0%, transparent 72%),
+    radial-gradient(700px 260px at 85% 100%, #0d1836 0%, transparent 70%);
+  opacity:0.0
+}
+.chat-header{
+  position:relative;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:rgba(8,14,37,0.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)
+}
+.chat-header .back{display:none;width:36px;height:36px;border-radius:50%;display:none;place-items:center;background:rgba(255,255,255,0.06);border:1px solid var(--border);cursor:pointer}
+@media(max-width:860px){.chat-header .back{display:grid}}
+.chat-header .info{flex:1;min-width:0}
+.chat-header .name{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
+.chat-header .status{font-size:11.5px;color:#7fb5ff;display:flex;align-items:center;gap:5px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--online);box-shadow:0 0 8px rgba(34,197,94,0.6)}
+.header-actions{display:flex;align-items:center;gap:8px}
+.ha-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:#cfe0ff;cursor:pointer}
+.ha-btn:hover{background:rgba(255,255,255,0.1)}
+.messages{
+  position:relative;z-index:1;flex:1;overflow:auto;padding:18px 14px 14px;display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.14) transparent
+}
+.day-sep{align-self:center;padding:5px 10px;border-radius:20px;background:rgba(8,14,37,0.72);border:1px solid var(--border);font-size:11px;color:var(--muted);backdrop-filter:blur(8px)}
+.bubble{
+  max-width:74%;padding:10px 12px;border-radius:18px;font-size:13.5px;line-height:1.45;position:relative;word-wrap:break-word;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:pop .22s ease
+}
+@keyframes pop{from{transform:translateY(6px) scale(0.98);opacity:0}to{transform:none;opacity:1}}
+.bubble.in{align-self:flex-start;background:rgba(18,27,60,0.86);border:1px solid rgba(255,255,255,0.08);color:#e6ecff;border-bottom-left-radius:6px}
+.bubble.out{align-self:flex-end;background:linear-gradient(135deg,#3b6bff 0%, #5a78ff 45%, #7c5cff 100%);color:#fff;border-bottom-right-radius:6px;box-shadow:0 8px 20px rgba(79,103,255,0.28)}
+.bubble .time{font-size:10.5px;opacity:0.75;margin-top:4px;display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.bubble.in .time{color:var(--muted)}
+.bubble.out .time{color:rgba(255,255,255,0.86)}
+.tick{width:14px;height:14px;display:inline-grid;place-items:center}
+.file-bubble{
+  display:flex;align-items:center;gap:12px;min-width:220px;padding:12px 12px
+}
+.file-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.16)}
+.file-meta .fname{font-weight:700;font-size:13px}
+.file-meta .fsize{font-size:11px;opacity:0.84}
+.voice{
+  display:flex;align-items:center;gap:10px;min-width:230px
+}
+.play-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#4f67ff;flex:0 0 36px;cursor:pointer;border:0}
+.wave{flex:1;display:flex;align-items:center;gap:2px;height:22px}
+.wave i{flex:1;background:rgba(255,255,255,0.85);border-radius:2px;display:block}
+.bubble.in .wave i{background:#7fb5ff}
+.image-bubble{padding:4px;overflow:hidden}
+.image-bubble img{width:100%;max-width:300px;border-radius:14px;display:block}
+.composer{
+  position:relative;z-index:2;display:flex;align-items:center;gap:8px;padding:10px 10px 12px;
+  background:rgba(8,14,37,0.82);backdrop-filter:blur(14px);border-top:1px solid var(--border)
+}
+.comp-input{
+  flex:1;display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:999px
+}
+.comp-input input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-size:13.5px;padding:6px 0}
+.comp-input input::placeholder{color:var(--muted2)}
+.cbtn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:transparent;border:0;color:#9bb0d9;cursor:pointer;flex:0 0 34px}
+.cbtn:hover{background:rgba(255,255,255,0.06);color:#fff}
+.send{
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,#4f67ff,#7c5cff);color:#fff;border:0;cursor:pointer;box-shadow:0 8px 18px rgba(79,103,255,0.35)
+}
+.send:active{transform:scale(0.96)}
+/* right panel */
+.right{
+  display:flex;flex-direction:column;gap:12px;min-height:680px;height:78vh;max-height:760px;overflow:auto;
+  background:transparent;border:0;box-shadow:none;backdrop-filter:none
+}
+@media(max-width:1220px){.right{display:none}}
+.prompt-card, .req-card{
+  background:rgba(12,20,48,0.72);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden
+}
+.prompt-card{padding:16px 16px 14px}
+.prompt-card h3{font-size:18px;font-weight:800;letter-spacing:0.04em}
+.prompt-card h4{margin-top:6px;font-size:14px;line-height:1.35;color:#d6e1ff}
+.prompt-text{margin-top:12px;padding:12px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;font-size:12.2px;line-height:1.55;color:#b9c9ef;max-height:220px;overflow:auto}
+.req-card{padding:14px 14px 10px}
+.req-card h3{font-size:15px;font-weight:800;margin-bottom:10px}
+.req-item{display:flex;gap:10px;padding:10px 10px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);margin-bottom:8px}
+.req-icon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(79,103,255,0.14);border:1px solid rgba(111,143,255,0.18);color:#8fb5ff;flex:0 0 32px}
+.req-item b{font-size:12px}
+.req-item p{font-size:11.5px;line-height:1.45;color:#8a9cc4;margin-top:2px}
+.right .brand-foot{
+  text-align:center;padding:10px 0 6px
+}
+.right .brand-foot .logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:0.06em;font-size:22px;
+  background:linear-gradient(90deg,#9fb8ff,#c9b6ff);-webkit-background-clip:text;color:transparent
+}
+.right .brand-foot p{font-size:11px;color:var(--muted2);margin-top:4px}
+/* footer badges */
+.badges{
+  max-width:1440px;margin:6px auto 18px;padding:0 14px;display:flex;gap:10px;overflow:auto;scrollbar-width:none
+}
+.badges::-webkit-scrollbar{display:none}
+.badge-pill{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  background:rgba(12,20,48,0.6);border:1px solid var(--border);backdrop-filter:blur(10px);white-space:nowrap;font-size:11px;color:#9bb0d9
+}
+.badge-pill b{color:#cfe0ff;font-size:11px}
+.badge-pill svg{width:16px;height:16px;color:#6ea8ff}
+/* emoji picker */
+.emoji-panel{
+  position:absolute;right:14px;bottom:66px;z-index:5;width:280px;padding:10px;
+  background:rgba(12,20,48,0.96);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(14px);
+  box-shadow:0 18px 40px rgba(0,8,40,0.45);display:none
+}
+.emoji-panel.open{display:block}
+.emoji-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.emoji-grid button{aspect-ratio:1;border-radius:10px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:18px;cursor:pointer}
+.emoji-grid button:hover{background:rgba(79,103,255,0.18);border-color:rgba(111,143,255,0.2)}
+/* modal call */
+.modal{
+  position:fixed;inset:0;z-index:40;display:none;place-items:center;padding:16px;background:rgba(2,6,23,0.62);backdrop-filter:blur(8px)
+}
+.modal.open{display:grid}
+.modal-card{
+  width:min(420px,95vw);padding:22px 18px;border-radius:24px;background:rgba(16,24,52,0.96);border:1px solid var(--border2);
+  text-align:center;box-shadow:0 24px 60px rgba(0,8,40,0.5)
+}
+.call-avatar{width:84px;height:84px;border-radius:50%;margin:0 auto 14px;overflow:hidden;border:2px solid rgba(111,143,255,0.28);box-shadow:0 0 30px rgba(79,103,255,0.35)}
+.call-actions{display:flex;justify-content:center;gap:12px;margin-top:16px}
+.call-btn{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;border:0;cursor:pointer;color:#fff}
+.call-btn.end{background:#ef4444}
+.call-btn.accept{background:#22c55e}
+/* views */
+.view{position:relative;z-index:1;flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+.view h2{font-size:18px;font-weight:800}
+.view p{color:var(--muted);font-size:13px;line-height:1.5}
+.contacts-grid{display:grid;gap:8px}
+.contact-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid var(--border)}
+.media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.media-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:1px solid var(--border)}
+.profile-card{padding:16px;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid var(--border)}
+.profile-head{display:flex;gap:14px;align-items:center}
+.profile-head img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(111,143,255,0.22)}
+.switch{width:44px;height:26px;border-radius:999px;background:rgba(255,255,255,0.12);position:relative;cursor:pointer;padding:2px}
+.switch i{position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;left:2px;top:2px}
+.switch.on{background:linear-gradient(135deg,#4f67ff,#7c5cff)}
+.switch.on i{transform:translateX(18px)}
+.toast{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);z-index:50;
+  padding:10px 14px;border-radius:999px;background:rgba(12,20,48,0.96);border:1px solid var(--border);color:#cfe0ff;font-size:13px;opacity:0;transition:.3s;pointer-events:none
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* mobile switch */
+@media(max-width:860px){
+  .left.hide-mobile{display:none}
+  .center.hide-mobile{display:none}
+  .shell{padding:0 10px}
+}
+</style>
+</head>
+<body>
+<div class="planet"></div><div class="glow"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <h1>OMNIX</h1>
+    <p>Общайся. Создавай. Будь ближе.</p>
+  </div>
+  <div class="topbar__center">
+    <p>Больше, чем мессенджер.<br><strong>Это твоя вселенная общения.</strong></p>
+  </div>
+</header>
+
+<div class="shell" id="shell">
+  <!-- LEFT -->
+  <aside class="panel left" id="leftPanel">
+    <div class="left__head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="avatar avatar--small"><img src="https://i.pravatar.cc/100?img=15" alt=""></div>
+        <div class="logo-mini">OMNIX</div>
+      </div>
+      <button class="icon-btn primary" id="newChatBtn" title="Новый чат"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+
+    <div class="search-wrap">
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a9cc4" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20L16.5 16.5"/></svg>
+        <input id="searchInput" placeholder="Поиск чатов, людей, сообще...">
+        <button class="cbtn" style="width:28px;height:28px" id="clearSearch" title="Очистить">✕</button>
+      </label>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="filter active" data-f="all">Все</button>
+      <button class="filter" data-f="private">Личные</button>
+      <button class="filter" data-f="group">Группы</button>
+      <button class="filter" data-f="channel">Каналы</button>
+      <button class="filter" data-f="unread" style="display:flex;align-items:center;gap:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M7 12h10M10 18h4"/></svg> </button>
+    </div>
+
+    <div class="chat-list" id="chatList"></div>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-nav="chats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12 7.8L3 21l1.7-5A8.5 8.5 0 0 1 21 11.5Z"/><path d="M8 11h8M8 15h5"/></svg>Чаты</button>
+      <button class="nav-btn" data-nav="contacts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 8a3 3 0 0 1 0 6"/><path d="M22 11h-2"/></svg>Контакты</button>
+      <button class="nav-plus" id="plusBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button class="nav-btn" data-nav="media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L3 22"/><path d="M14 9h.01"/></svg>Медиа</button>
+      <button class="nav-btn" data-nav="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Профиль</button>
+    </nav>
+  </aside>
+
+  <!-- CENTER -->
+  <section class="panel center" id="centerPanel">
+    <div class="chat-bg">
+      <img id="chatBgImg" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1200&auto=format&fit=crop" alt="">
+      <div class="mountain"></div>
+    </div>
+
+    <div class="chat-header">
+      <button class="back" id="backBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cfe0ff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="avatar" id="headAvatar"><img src="https://i.pravatar.cc/100?img=11" alt=""></div>
+      <div class="info">
+        <div class="name" id="headName">Алексей <span style="color:#7fb5ff;font-weight:500;font-size:12px;display:flex;align-items:center;gap:4px"><span class="status-dot"></span>В сети</span></div>
+        <div class="status" id="headStatus">был(а) только что · сквозное шифрование</div>
+      </div>
+      <div class="header-actions">
+        <button class="ha-btn" id="callBtn" title="Аудио"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .8 2.9a2 2 0 0 1-.6 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.6c.9.4 1.9.7 2.9.8A2 2 0 0 1 22 16.9Z"/></svg></button>
+        <button class="ha-btn" id="videoBtn" title="Видео"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7Z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+        <button class="ha-btn" id="moreBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+      </div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="emoji-panel" id="emojiPanel">
+      <div class="emoji-grid" id="emojiGrid"></div>
+      <div style="margin-top:8px;display:flex;gap:6px">
+        <button class="filter active" style="font-size:11px" onclick="insertEmoji('😊')">Частые</button>
+        <button class="filter" style="font-size:11px" onclick="toast('Скоро: стикеры Omnix')">Стикеры</button>
+        <button class="filter" style="font-size:11px" onclick="toast('Скоро: GIF')">GIF</button>
+      </div>
+    </div>
+
+    <div class="composer">
+      <button class="icon-btn" style="width:38px;height:38px;border-radius:50%" id="attachBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+      <label class="comp-input">
+        <input id="msgInput" placeholder="Сообщение..." autocomplete="off">
+        <button class="cbtn" id="emojiBtn" title="Эмодзи"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></button>
+        <button class="cbtn" id="imgBtn" title="Фото"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L3 22"/></svg></button>
+        <input type="file" id="fileInput" hidden accept="image/*,.pdf,.zip,.apk,.mp3,.mp4">
+        <input type="file" id="imageInput" hidden accept="image/*">
+      </label>
+      <button class="send" id="sendBtn" title="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9 22 2Z"/></svg></button>
+      <button class="send" id="micBtn" style="display:none;background:linear-gradient(135deg,#22c55e,#16a34a)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 10a7 7 0 0 1-14 0"/><path d="M12 19v4M8 23h8"/></svg></button>
+    </div>
+  </section>
+
+  <!-- RIGHT -->
+  <aside class="right" id="rightPanel">
+    <div class="prompt-card">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h3>ПРОМПТ</h3>
+        <span style="font-size:10px;letter-spacing:.08em;background:rgba(79,103,255,0.16);border:1px solid rgba(111,143,255,0.22);padding:4px 8px;border-radius:20px;color:#9fb8ff">P2P · E2EE</span>
+      </div>
+      <h4>Промпт для разработки проекта мессенджера Omnix</h4>
+      <div class="prompt-text">
+        «Ты — ведущий ML/Fullstack/UX/UI разработчик и архитектор продукта. Разработай современный мессенджер под названием Omnix. Создай полный проект с описанием архитектуры, функционала, дизайна, технологии, структуры базы данных, планом разработки и тестирования.<br><br>
+        Особое внимание удели: безопасности, сквозному шифрованию, P2P-архитектуре, удобному и красивому интерфейсу в стиле стеклянного (glassmorphism) дизайна, мобильной нижней навигации, поддержке всех платформ (веб, iOS, Android, Desktop).<br><br>
+        Цель — создать быстрый, безопасный, функциональный и эстетичный мессенджер с уникальной концепцией Omnix: больше, чем просто общение. Это твоя вселенная.»</div>
+    </div>
+
+    <div class="req-card">
+      <h3>Ключевые требования</h3>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="3.5"/><path d="M16.5 7.5h.01"/></svg></div><div><b>Название и концепция</b><p>Omnix — современный мессенджер с уникальной вселенной общения.</p></div></div>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 9a3 3 0 0 1-3 3"/><path d="M22 3a3 3 0 0 1-3 3"/><circle cx="19" cy="11" r="1.5"/><circle cx="19" cy="5" r="1.5"/></svg></div><div><b>Функционал</b><p>Чаты, группы, каналы, голосовые и видеозвонки, медиа, файлы, статусы, боты, AI-помощник, настройки приватности.</p></div></div>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg></div><div><b>Безопасность</b><p>Сквозное шифрование, P2P, защита данных, двухфакторная аутентификация.</p></div></div>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19l7-7a2 2 0 0 0 0-3l-1-1a2 2 0 0 0-3 0l-7 7v4h4Z"/><path d="M18 8l2-2"/><path d="M5 19l2.5-1"/></svg></div><div><b>Дизайн</b><p>Стеклянный интерфейс, минимализм, неоновые акценты, анимации, нижняя навигация (мобильная версия).</p></div></div>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div><div><b>Платформы</b><p>Web, iOS, Android, Desktop.</p></div></div>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3-1 1.7 1.7 0 0 0-.3-1l1.4-1a.5.5 0 0 0 .1-.7l-1.3-2.2a.5.5 0 0 0-.7-.2l-1.6.7a5 5 0 0 0-1.6-.9L15 5a.5.5 0 0 0-.5-.5h-2.6a.5.5 0 0 0-.5.4l-.3 1.8a5 5 0 0 0-1.6.9l-1.6-.7a.5.5 0 0 0-.7.2L6 9.9a.5.5 0 0 0 .1.7l1.4 1a1.7 1.7 0 0 0 0 2l-1.4 1a.5.5 0 0 0-.1.7L7.4 18a.5.5 0 0 0 .7.2l1.6-.7c.5.4 1 .7 1.6.9l.3 1.8c0 .3.2.5.5.5H14c.3 0 .5-.2.5-.5l.3-1.8c.6-.2 1.1-.5 1.6-.9l1.6.7c.2.1.5 0 .7-.2l1.3-2.2a.5.5 0 0 0-.1-.7L19.4 15Z"/></svg></div><div><b>Технологии</b><p>Flutter / React Native (мобильные), Next.js (web), Node.js (backend), PostgreSQL + Redis (база данных и кэш), WebRTC (звонки), Docker (развертывание).</p></div></div>
+      <div class="req-item"><div class="req-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><path d="M9 3.5h6"/><path d="M9 20.5h6"/></svg></div><div><b>Этапы разработки</b><p>Анализ → Проектирование → Дизайн → Разработка → Тестирование → Релиз → Поддержка.</p></div></div>
+    </div>
+
+    <div class="brand-foot">
+      <div class="logo">OMNIX</div>
+      <p>Твой мир. Твои люди. Твой мессенджер.</p>
+    </div>
+  </aside>
+</div>
+
+<div class="badges">
+  <div class="badge-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg> <b>Безопасность</b> и приватность</div>
+  <div class="badge-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8Z"/></svg> <b>Быстрая</b> работа</div>
+  <div class="badge-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 9a3 3 0 0 1-3 3"/><path d="M22 3a3 3 0 0 1-3 3"/></svg> <b>Группы и каналы</b></div>
+  <div class="badge-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M8 21h8"/><path d="M12 16v5"/></svg> <b>Все платформы</b></div>
+  <div class="badge-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.9 3.9L18 8l-3.1 3 0.7 4.2L12 13.7 8.4 15.2 9.1 11 6 8l4.1-.9L12 3Z"/><path d="M19 5l.6 1.2.2.4"/><path d="M5 13l-1 2"/></svg> <b>Уникальный</b> дизайн</div>
+  <div class="badge-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z"/><path d="M15 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z"/><path d="M9 12h6"/></svg> <b>Больше чем</b> мессенджер</div>
+</div>
+
+<!-- call modal -->
+<div class="modal" id="callModal">
+  <div class="modal-card">
+    <div class="call-avatar"><img id="callAvatar" src="https://i.pravatar.cc/150?img=11" style="width:100%;height:100%;object-fit:cover"></div>
+    <h3 id="callName" style="font-size:18px;font-weight:800">Алексей</h3>
+    <p id="callStatus" style="color:#8a9cc4;margin-top:6px;font-size:13px">Вызов... • E2EE шифрование</p>
+    <div style="margin:14px auto 0;width:120px;height:3px;border-radius:99px;background:rgba(255,255,255,0.08);overflow:hidden"><div id="callProgress" style="height:100%;width:0%;background:linear-gradient(90deg,#4f67ff,#7c5cff);transition:width .3s"></div></div>
+    <div class="call-actions">
+      <button class="call-btn end" id="endCall"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .8 2.9a2 2 0 0 1-.6 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.6c.9.4 1.9.7 2.9.8A2 2 0 0 1 22 16.9Z"/><path d="M2 2l20 20"/></svg></button>
+      <button class="call-btn accept" id="acceptCall" style="display:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .8 2.9a2 2 0 0 1-.6 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.6c.9.4 1.9.7 2.9.8A2 2 0 0 1 22 16.9Z"/></svg></button>
+    </div>
+    <p style="margin-top:12px;font-size:11px;color:var(--muted2)">Защищено сквозным шифрованием • P2P</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const chats = [
+  {
+    id:'alex', name:'Алексей', type:'private', avatar:'https://i.pravatar.cc/150?img=11',
+    time:'9:41', unread:2, online:true, typingText:'Печатает...',
+    last:'Планируем на следующую неделю...',
+    bg:'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1200&auto=format&fit=crop',
+    messages:[
+      {from:'them', text:'Привет! Как дела? 😊', time:'9:25', ticks:''},
+      {from:'me', text:'Привет! Всё отлично, работаю над новым проектом Omnix', time:'9:27', ticks:'✓✓'},
+      {from:'them', text:'Круто! Когда ждать релиз?', time:'9:28', ticks:''},
+      {from:'me', text:'Планируем на следующую неделю. Уже почти готово!', time:'9:30', ticks:'✓✓'},
+      {from:'them', text:'Супер! Давай, я помогу с тестированием, если что', time:'9:31', ticks:''},
+      {from:'me', type:'file', fname:'omnix_build.apk', fsize:'24.8 МБ', time:'9:35', ticks:'✓✓'},
+      {from:'them', text:'Звучит отлично! 👍 Ты лучший!', time:'9:36', ticks:''},
+      {from:'me', type:'voice', duration:'0:12', time:'9:38', ticks:'✓✓'},
+      {from:'me', type:'image', src:'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop', time:'9:40', ticks:'✓✓'},
+    ]
+  },
+  { id:'viktoria', name:'Виктория', type:'private', avatar:'https://i.pravatar.cc/150?img=32', time:'9:32', unread:0, online:false, last:'Отлично! Жду тебя 👋', bg:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop',
+    messages:[
+      {from:'them', text:'Привет! Ты где?', time:'9:10'},
+      {from:'me', text:'Уже выхожу, 5 минут!', time:'9:12', ticks:'✓✓'},
+      {from:'them', text:'Отлично! Жду тебя 👋', time:'9:32'},
+    ]},
+  { id:'project', name:'Проект Omnix', type:'group', avatar:'', icon:'omnix', time:'8:47', unread:12, last:'Данил: Новый билд готов!', bg:'https://images.unsplash.com/photo-1451187580459-43490279c429?q=80&w=1200&auto=format&fit=crop',
+    messages:[
+      {from:'them', name:'Данил', text:'Новый билд готов! Залил в TestFlight 🚀', time:'8:44'},
+      {from:'them', name:'Анна', text:'Glassmorphism выглядит просто космос ✨', time:'8:45'},
+      {from:'me', text:'Согласен, нижняя навигация тоже топ', time:'8:46', ticks:'✓✓'},
+      {from:'them', name:'Данил', text:'Новый билд готов!', time:'8:47'},
+    ]},
+  { id:'tech', name:'Технологии будущего', type:'channel', avatar:'', icon:'tech', time:'7:21', unread:8, last:'ИИ меняет мир 🌐', bg:'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1200&auto=format&fit=crop',
+    messages:[{from:'them', text:'ИИ меняет мир 🌐 Сегодня в 19:00 прямой эфир про нейросети', time:'7:21'}]},
+  { id:'crypto', name:'Крипто чат', type:'group', avatar:'', icon:'btc', time:'6:58', unread:4, last:'Курс BTC: $67,432 📈', bg:'https://images.unsplash.com/photo-1620336655052-bd7123224f0e?q=80&w=1200&auto=format&fit=crop',
+    messages:[{from:'them', text:'Курс BTC: $67,432 📈 +4.2% за сутки', time:'6:58'}]},
+  { id:'friends', name:'Друзья', type:'group', avatar:'', icon:'friends', time:'6:12', unread:0, last:'Макс: Встречаемся в 19:00?', bg:'https://images.unsplash.com/photo-1511635001-e5a24843664f?q=80&w=1200&auto=format&fit=crop',
+    messages:[{from:'them', name:'Макс', text:'Встречаемся в 19:00? У кофейни на Ленина', time:'6:12'}]},
+  { id:'maria', name:'Мария', type:'private', avatar:'https://i.pravatar.cc/150?img=26', time:'Вчера', unread:0, last:'📷 Фото', bg:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop',
+    messages:[{from:'them', type:'image', src:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop', time:'Вчера'}, {from:'them', text:'Фото', time:'Вчера'}]},
+  { id:'gaming', name:'Игровое сообщество', type:'channel', avatar:'', icon:'game', time:'Вчера', unread:0, last:'Новый ивент уже в игре!', bg:'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop',
+    messages:[{from:'them', text:'Новый ивент уже в игре! Заходи и получай бонусы 🎮', time:'Вчера'}]},
+  { id:'family', name:'Семья', type:'private', avatar:'https://i.pravatar.cc/150?img=38', time:'Вчера', unread:0, last:'Мама: Как дела?', bg:'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200&auto=format&fit=crop',
+    messages:[{from:'them', text:'Мама: Как дела? ❤️', time:'Вчера'}, {from:'me', text:'Всё хорошо, мам! Скоро позвоню', time:'Вчера', ticks:'✓✓'}]},
+  { id:'ai', name:'Omnix AI', type:'private', avatar:'', icon:'ai', time:'9:41', unread:1, last:'Я могу помочь с кодом, текстами...', bg:'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop',
+    messages:[
+      {from:'them', text:'Привет! Я Omnix AI 🤖 Твой помощник внутри мессенджера.\nСпроси меня: «напиши промпт», «объясни P2P», «сгенерируй идею»', time:'9:41'},
+    ]},
+];
+
+let activeId = 'alex';
+let filter = 'all';
+let search = '';
+let viewMode = 'chats'; // chats|contacts|media|profile
+
+const chatListEl = document.getElementById('chatList');
+const messagesEl = document.getElementById('messages');
+const headName = document.getElementById('headName');
+const headStatus = document.getElementById('headStatus');
+const headAvatar = document.getElementById('headAvatar');
+const bgImg = document.getElementById('chatBgImg');
+const searchInput = document.getElementById('searchInput');
+const msgInput = document.getElementById('msgInput');
+const emojiPanel = document.getElementById('emojiPanel');
+const emojiGrid = document.getElementById('emojiGrid');
+const toastEl = document.getElementById('toast');
+
+function iconForChat(c){
+  if(c.avatar) return `<img src="${c.avatar}" alt="">`;
+  const map={
+    omnix:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8fb5ff" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>`,
+    tech:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#ff6b9d" stroke-width="1.6"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M18.5 18.5L20 20M20 5L18.5 6.5M5.5 18.5L4 20" stroke="#8b5cf6" stroke-width="1.5"/></svg>`,
+    btc:`<svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z" fill="#1f2a5a"/><path d="M14.2 13.2c.4-.3.7-.7.7-1.3 0-1-.8-1.6-2-1.8V8h-1.1v1.9h-1.1V8h-1.1v1.9H8v1h1.2c.1 0 .2.1.2.2v4.6c0 .1-.1.2-.2.2H8v1h1.6V19h1.1v-2.1h1.1V19h1.1v-2.1c1.4-.2 2.4-.9 2.4-2.1 0-.8-.4-1.3-1.1-1.6Z" fill="#ffb84d"/><path d="M10.7 12.8v-2.1c.5 0 1.2.1 1.2.9 0 .7-.6 1.1-1.2 1.2Z" fill="#1f2a5a"/><path d="M11.1 14.9v2.2c-.6 0-1.3-.1-1.3-1 0-.8.7-1.2 1.3-1.2Z" fill="#1f2a5a"/></svg>`,
+    friends:`<div style="display:flex;margin-left:2px"><img src="https://i.pravatar.cc/100?img=14" style="width:22px;height:22px;border-radius:50%;border:2px solid #101c3d;margin-right:-6px"><img src="https://i.pravatar.cc/100?img=16" style="width:22px;height:22px;border-radius:50%;border:2px solid #101c3d;margin-right:-6px"><img src="https://i.pravatar.cc/100?img=18" style="width:22px;height:22px;border-radius:50%;border:2px solid #101c3d"></div>`,
+    game:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6"><rect x="5" y="8" width="14" height="8" rx="4"/><circle cx="9" cy="12" r="1" fill="#22d3ee"/><path d="M14 11h2M15 10v2"/><path d="M7 10h.01M7 14h.01"/></svg>`,
+    ai:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" fill="rgba(79,103,255,0.18)" stroke="#8fb5ff"/><path d="M9 12h6M12 9v6" stroke="#cfe0ff" stroke-width="1.6"/><circle cx="9" cy="9" r="1" fill="#8fb5ff"/><circle cx="15" cy="15" r="1" fill="#8fb5ff"/></svg>`,
+  };
+  return map[c.icon] || `<span style="font-weight:700;color:#8fb5ff">${c.name[0]}</span>`;
+}
+
+function renderChatList(){
+  let list = chats.filter(c=>{
+    if(filter==='private' && c.type!=='private') return false;
+    if(filter==='group' && c.type!=='group') return false;
+    if(filter==='channel' && c.type!=='channel') return false;
+    if(filter==='unread' && !c.unread) return false;
+    if(search){
+      const s=search.toLowerCase();
+      return c.name.toLowerCase().includes(s) || c.last.toLowerCase().includes(s);
+    }
+    return true;
+  });
+  chatListEl.innerHTML = list.map(c=>`
+    <div class="chat-item ${c.id===activeId?'active':''}" data-id="${c.id}">
+      <div class="avatar">${iconForChat(c)} ${c.online?'<span class="online-dot"></span>':''}</div>
+      <div class="chat-meta">
+        <div class="name">${c.name}</div>
+        <div class="last ${c.typingText?'typing':''}">${c.typingText?c.typingText:c.last}</div>
+      </div>
+      <div class="chat-right">
+        <div class="chat-time">${c.time}</div>
+        ${c.unread?`<div class="badge">${c.unread}</div>`:c.type==='channel'?`<div class="badge muted" style="font-size:10px">↗</div>`:`<div style="opacity:.6"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7da6" stroke-width="1.8"><path d="M18 7L10 15l-4-4"/></svg></div>`}
+      </div>
+    </div>
+  `).join('');
+  // pin AI on top if not filtered?
+  chatListEl.querySelectorAll('.chat-item').forEach(el=>el.addEventListener('click',()=>{
+    activeId=el.dataset.id;
+    const c=chats.find(x=>x.id===activeId);
+    if(c) c.unread=0;
+    if(window.innerWidth<=860){ document.getElementById('leftPanel').classList.add('hide-mobile'); document.getElementById('centerPanel').classList.remove('hide-mobile'); }
+    viewMode='chats';
+    renderAll();
+  }));
+}
+
+function waveBars(){
+  let h='';
+  for(let i=0;i<18;i++){
+    const ht= 6 + Math.abs(Math.sin(i*1.2))*14 + Math.random()*6;
+    h+=`<i style="height:${ht}px;opacity:${0.5+Math.random()*0.5}"></i>`;
+  }
+  return h;
+}
+
+function renderMessages(){
+  const c = chats.find(x=>x.id===activeId);
+  if(!c) return;
+  // header
+  headAvatar.innerHTML = iconForChat(c) || `<img src="${c.avatar}">`;
+  if(c.avatar) headAvatar.innerHTML=`<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover">`;
+  else headAvatar.innerHTML=iconForChat(c);
+  headAvatar.style.background = c.avatar? 'transparent':'linear-gradient(135deg,#1a2a6b,#2a3a8a)';
+  document.getElementById('headName').innerHTML = `${c.name} <span style="color:#7fb5ff;font-weight:500;font-size:12px;display:inline-flex;align-items:center;gap:4px">${c.online?'<span class="status-dot"></span>В сети':'был(а) недавно'}</span>`;
+  headStatus.textContent = c.type==='channel' ? 'канал · '+c.last : c.type==='group' ? `${Math.floor(Math.random()*40+8)} участников · шифрование включено` : 'был(а) только что · сквозное шифрование';
+  bgImg.src = c.bg;
+
+  if(viewMode!=='chats'){
+    let html='';
+    if(viewMode==='contacts'){
+      html = `<div class="view">
+        <h2>Контакты</h2>
+        <p>Твои люди — твоя вселенная. Добавляй друзей, создавай группы.</p>
+        <div class="contacts-grid">
+          ${chats.filter(x=>x.type==='private').map(x=>`
+            <div class="contact-row">
+              <div class="avatar">${x.avatar?`<img src="${x.avatar}">`:iconForChat(x)}</div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:13px">${x.name}</div>
+                <div style="font-size:11.5px;color:var(--muted)">${x.online?'В сети':'Был(а) недавно'}</div>
+              </div>
+              <button class="icon-btn" onclick="startChat('${x.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12 7.8L3 21l1.7-5A8.5 8.5 0 0 1 21 11.5Z"/></svg></button>
+              <button class="icon-btn" onclick="openCall('${x.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .8 2.9a2 2 0 0 1-.6 2.1L8 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.6c.9.4 1.9.7 2.9.8A2 2 0 0 1 22 16.9Z"/></svg></button>
+            </div>
+          `).join('')}
+        </div>
+        <div class="profile-card" style="margin-top:8px">
+          <div style="font-weight:700">Пригласить друзей</div>
+          <p style="margin-top:6px">Поделись ссылкой: <span style="color:#8fb5ff;word-break:break-all">omnix.app/join/your-id</span></p>
+          <button class="icon-btn primary" style="width:auto;padding:0 14px;border-radius:20px;height:36px;margin-top:10px;font-size:13px;font-weight:700" onclick="toast('Ссылка скопирована!')">Копировать ссылку</button>
+        </div>
+      </div>`;
+    } else if(viewMode==='media'){
+      html = `<div class="view">
+        <h2>Медиа</h2>
+        <p>Фото, видео, файлы и голосовые — всё в одной вселенной.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">
+          <button class="filter active">Все</button><button class="filter" onclick="toast('Фильтр: Фото')">Фото</button><button class="filter" onclick="toast('Фильтр: Видео')">Видео</button><button class="filter" onclick="toast('Фильтр: Файлы')">Файлы</button><button class="filter" onclick="toast('Фильтр: Голосовые')">Голосовые</button>
+        </div>
+        <div class="media-grid">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=400&auto=format&fit=crop" onclick="toast('Открыть фото')">
+          <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=400&auto=format&fit=crop" onclick="toast('Открыть фото')">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop" onclick="toast('Открыть фото')">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c429?q=80&w=400&auto=format&fit=crop" onclick="toast('Открыть фото')">
+          <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=400&auto=format&fit=crop" onclick="toast('Открыть фото')">
+          <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=400&auto=format&fit=crop" onclick="toast('Открыть фото')">
+        </div>
+        <div class="profile-card">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="file-icon" style="background:linear-gradient(135deg,#4f67ff,#7c5cff);color:#fff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M10 13H8"/><path d="M14 17H8"/><path d="M13 13h1"/></svg></div>
+            <div><div style="font-weight:700;font-size:13px">omnix_build.apk</div><div style="font-size:11px;color:var(--muted)">24.8 МБ · Сегодня</div></div>
+            <button class="icon-btn" style="margin-left:auto" onclick="toast('Скачивание...')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v14"/><path d="M8 13l4 4 4-4"/><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg></button>
+          </div>
+        </div>
+      </div>`;
+    } else if(viewMode==='profile'){
+      html = `<div class="view">
+        <div class="profile-card">
+          <div class="profile-head">
+            <img src="https://i.pravatar.cc/150?img=15" alt="">
+            <div style="flex:1">
+              <div style="font-weight:800;font-size:16px">Ты в Omnix</div>
+              <div style="font-size:12.5px;color:var(--muted)">@omnix_user · В сети</div>
+              <div style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:20px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.22);font-size:11px;color:#86efac"><span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block"></span>Сквозное шифрование включено</div>
+            </div>
+            <button class="icon-btn" onclick="toast('Редактировать профиль')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg></button>
+          </div>
+          <div style="margin-top:14px;display:grid;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+              <div><div style="font-weight:600;font-size:13px">P2P соединение</div><div style="font-size:11px;color:var(--muted)">Прямая передача без серверов</div></div>
+              <div class="switch on" onclick="this.classList.toggle('on')"><i></i></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+              <div><div style="font-weight:600;font-size:13px">Двухфакторная аутентификация</div><div style="font-size:11px;color:var(--muted)">Защита аккаунта</div></div>
+              <div class="switch on" onclick="this.classList.toggle('on')"><i></i></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border)">
+              <div><div style="font-weight:600;font-size:13px">Невидимка</div><div style="font-size:11px;color:var(--muted)">Скрыть «В сети»</div></div>
+              <div class="switch" onclick="this.classList.toggle('on')"><i></i></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+            <button class="filter active" style="justify-content:center;padding:10px" onclick="toast('Настройки приватности')">🔒 Приватность</button>
+            <button class="filter active" style="justify-content:center;padding:10px" onclick="toast('Тема изменена')">🎨 Тема</button>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div style="font-weight:700">О мессенджере</div>
+          <p style="margin-top:6px">Omnix — больше, чем мессенджер. Твоя вселенная общения. Быстрый, безопасный, с glassmorphism-дизайном, неоновыми акцентами и поддержкой всех платформ.</p>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge-pill"><b>Web</b> · Next.js</span><span class="badge-pill"><b>Mobile</b> · Flutter</span><span class="badge-pill"><b>Calls</b> · WebRTC</span><span class="badge-pill"><b>Storage</b> · E2EE</span>
+          </div>
+        </div>
+      </div>`;
+    }
+    messagesEl.innerHTML = html;
+    messagesEl.scrollTop = 0;
+    return;
+  }
+
+  const days = { show:true };
+  let html = `<div class="day-sep">Сегодня</div>`;
+  c.messages.forEach(m=>{
+    if(m.type==='file'){
+      html+=`<div class="bubble ${m.from==='me'?'out':'in'} file-bubble">
+        <div class="file-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${m.from==='me'?'white':'#8fb5ff'}" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M10 13H8"/><path d="M14 17H8"/></svg></div>
+        <div class="file-meta"><div class="fname">${m.fname}</div><div class="fsize">${m.fsize}</div></div>
+        <div class="time">${m.time} <span class="tick">${m.ticks||''}</span></div>
+      </div>`;
+    } else if(m.type==='voice'){
+      html+=`<div class="bubble ${m.from==='me'?'out':'in'} voice">
+        <button class="play-btn" onclick="togglePlay(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        <div class="wave">${waveBars()}</div>
+        <div style="font-size:11px;opacity:.9;white-space:nowrap">${m.duration}</div>
+        <div class="time" style="margin-left:6px">${m.time} <span class="tick">${m.ticks||''}</span></div>
+      </div>`;
+    } else if(m.type==='image'){
+      html+=`<div class="bubble ${m.from==='me'?'out':'in'} image-bubble">
+        <img src="${m.src}" alt="" loading="lazy">
+        <div class="time">${m.time} <span class="tick">${m.ticks||''}</span></div>
+      </div>`;
+    } else {
+      // text may contain name tag for groups
+      const prefix = m.name? `<span style="font-weight:800;color:${m.from==='me'?'#fff':'#8fb5ff'};font-size:12px;display:block;margin-bottom:2px">${m.name}</span>` : '';
+      html+=`<div class="bubble ${m.from==='me'?'out':'in'}">${prefix}${escapeHtml(m.text)}<div class="time">${m.time} ${m.from==='me'?`<span class="tick">✓✓</span>`:''}</div></div>`;
+    }
+  });
+  messagesEl.innerHTML = html;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  // attach play handlers
+}
+
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+function renderAll(){
+  renderChatList();
+  renderMessages();
+  // update nav active
+  document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.nav===viewMode));
+}
+
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  setTimeout(()=>toastEl.classList.remove('show'), 2200);
+}
+
+// emoji
+const emojis = ["😊","😂","❤️","🔥","👍","🎉","😍","🥺","🤩","🙏","✨","⚡️","🚀","🌌","💙","🫶","👋","😎","🤖","📱","💬","🌙","⭐️","🎮","💎","🍕","☕️","🌐","🔒","💜"];
+emojiGrid.innerHTML = emojis.map(e=>`<button onclick="insertEmoji('${e}')">${e}</button>`).join('');
+
+function insertEmoji(e){
+  msgInput.value += e;
+  msgInput.focus();
+  emojiPanel.classList.remove('open');
+}
+window.insertEmoji = insertEmoji;
+window.toast = toast;
+
+function sendMessage(){
+  const text = msgInput.value.trim();
+  if(!text) return;
+  const c = chats.find(x=>x.id===activeId);
+  if(!c || viewMode!=='chats'){ toast('Выбери чат для отправки'); return; }
+  const now = new Date();
+  const time = now.getHours()+':'+ String(now.getMinutes()).padStart(2,'0');
+  c.messages.push({from:'me', text, time, ticks:'✓✓'});
+  c.last = text.slice(0,34);
+  c.time = time;
+  msgInput.value='';
+  // hide mic/send logic
+  updateComposer();
+  renderAll();
+  // auto reply
+  setTimeout(()=>{
+    if(c.id==='ai'){
+      let reply = "Отличный вопрос! 💙 Omnix использует E2EE + P2P. Если нужно — сгенерирую архитектуру, стек или дизайн-систему. Попробуй: «напиши план тестирования».";
+      const low=text.toLowerCase();
+      if(low.includes('привет')) reply="Привет! Я Omnix AI — твой помощник. Чем помочь?";
+      else if(low.includes('p2p')||low.includes('шифр')) reply="P2P в Omnix: сообщения идут напрямую между устройствами через WebRTC DataChannel, сервер только для handshake. Шифрование — Double Ratchet (Signal Protocol) + AES-256.";
+      else if(low.includes('стек')||low.includes('технолог')) reply="Стек Omnix: Frontend — Next.js + Tailwind, Mobile — Flutter, Backend — Node.js + WebSocket, БД — PostgreSQL + Redis, звонки — WebRTC, деплой — Docker + K8s.";
+      else if(low.includes('дизайн')) reply="Дизайн Omnix — glassmorphism: полупрозрачные панели, blur 20px, неоновые градиенты #4F67FF→#7C5CFF, тёмный космос-фон, нижняя навигация с floating +.";
+      else if(low.includes('план')) reply="План разработки Omnix: 1 Анализ → 2 Архитектура → 3 Дизайн → 4 Разработка (чаты, звонки, файлы) → 5 Тестирование → 6 Релиз → 7 Поддержка.";
+      c.messages.push({from:'them', text:reply, time: (new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'))});
+    } else if(c.typingText){
+      c.typingText = null;
+    } else {
+      const replies = [
+        "Понял! 👍",
+        "Супер, спасибо!",
+        "Уже смотрю 👀",
+        "Давай созвонимся?",
+        "Ок, принял!",
+        "Огонь! 🔥",
+        "Тогда до завтра?",
+      ];
+      const r = replies[Math.floor(Math.random()*replies.length)];
+      c.messages.push({from:'them', text:r, time: (new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'))});
+    }
+    c.last = c.messages[c.messages.length-1].text.slice(0,34);
+    renderAll();
+  }, 900+Math.random()*600);
+}
+
+function updateComposer(){
+  const hasText = msgInput.value.trim().length>0;
+  document.getElementById('sendBtn').style.display = hasText || viewMode!=='chats' ? 'grid' : 'none';
+  document.getElementById('micBtn').style.display = !hasText && viewMode==='chats' ? 'grid' : 'none';
+}
+
+// events
+document.getElementById('filters').addEventListener('click', e=>{
+  const b=e.target.closest('.filter'); if(!b) return;
+  document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  filter=b.dataset.f;
+  renderChatList();
+});
+searchInput.addEventListener('input', e=>{ search=e.target.value; renderChatList(); });
+document.getElementById('clearSearch').addEventListener('click',()=>{searchInput.value='';search='';renderChatList();});
+msgInput.addEventListener('input', updateComposer);
+msgInput.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); }});
+document.getElementById('sendBtn').addEventListener('click', sendMessage);
+document.getElementById('micBtn').addEventListener('click', ()=>{
+  toast('🎙️ Запись голосового... (3с)');
+  document.getElementById('micBtn').style.opacity='0.7';
+  setTimeout(()=>{
+    const c=chats.find(x=>x.id===activeId);
+    c.messages.push({from:'me', type:'voice', duration:'0:03', time: new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), ticks:'✓✓'});
+    renderAll();
+    toast('Голосовое отправлено');
+    document.getElementById('micBtn').style.opacity='1';
+  }, 1400);
+});
+document.getElementById('emojiBtn').addEventListener('click', ()=> emojiPanel.classList.toggle('open'));
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#emojiPanel') && !e.target.closest('#emojiBtn')) emojiPanel.classList.remove('open');
+});
+document.getElementById('attachBtn').addEventListener('click', ()=> document.getElementById('fileInput').click());
+document.getElementById('imgBtn').addEventListener('click', ()=> document.getElementById('imageInput').click());
+document.getElementById('fileInput').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const c=chats.find(x=>x.id===activeId);
+  c.messages.push({from:'me', type:'file', fname:f.name, fsize:(f.size/1024/1024).toFixed(1)+' МБ', time:new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), ticks:'✓✓'});
+  c.last = f.name;
+  renderAll(); toast('Файл отправлен: '+f.name);
+  e.target.value='';
+});
+document.getElementById('imageInput').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const url=URL.createObjectURL(f);
+  const c=chats.find(x=>x.id===activeId);
+  c.messages.push({from:'me', type:'image', src:url, time:new Date().getHours()+':'+String(new Date().getMinutes()).padStart(2,'0'), ticks:'✓✓'});
+  c.last='📷 Фото';
+  renderAll(); toast('Фото отправлено');
+  e.target.value='';
+});
+document.getElementById('newChatBtn').addEventListener('click', ()=>{
+  const name=prompt('Имя нового контакта:');
+  if(!name) return;
+  const id='u'+Date.now();
+  chats.unshift({id, name, type:'private', avatar:`https://i.pravatar.cc/150?u=${id}`, time:'сейчас', unread:0, online:true, last:'Чат создан', bg:'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1200&auto=format&fit=crop', messages:[{from:'them', text:`Привет! Я ${name} 👋`, time:'сейчас'}]});
+  activeId=id; viewMode='chats'; renderAll(); toast('Чат создан');
+});
+document.getElementById('plusBtn').addEventListener('click', ()=>{
+  document.getElementById('newChatBtn').click();
+});
+document.querySelectorAll('.nav-btn').forEach(b=> b.addEventListener('click', ()=>{
+  viewMode=b.dataset.nav;
+  if(viewMode==='chats'){
+    // on mobile show list
+    if(window.innerWidth<=860){
+      document.getElementById('leftPanel').classList.remove('hide-mobile');
+      document.getElementById('centerPanel').classList.add('hide-mobile');
+    }
+  } else {
+    if(window.innerWidth<=860){
+      document.getElementById('leftPanel').classList.add('hide-mobile');
+      document.getElementById('centerPanel').classList.remove('hide-mobile');
+    }
+  }
+  renderAll();
+}));
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  document.getElementById('leftPanel').classList.remove('hide-mobile');
+  document.getElementById('centerPanel').classList.add('hide-mobile');
+});
+
+function startChat(id){ activeId=id; viewMode='chats'; if(window.innerWidth<=860){document.getElementById('leftPanel').classList.add('hide-mobile'); document.getElementById('centerPanel').classList.remove('hide-mobile');} renderAll(); }
+window.startChat=startChat;
+
+// calls
+const callModal=document.getElementById('callModal');
+let callTimer=null, callProgress=0;
+function openCall(id){
+  const c=chats.find(x=>x.id=== (id||activeId)); if(!c) return;
+  document.getElementById('callName').textContent=c.name;
+  document.getElementById('callAvatar').src=c.avatar || 'https://i.pravatar.cc/150?img=11';
+  document.getElementById('callStatus').textContent='Вызов... • E2EE шифрование';
+  callProgress=0; document.getElementById('callProgress').style.width='0%';
+  callModal.classList.add('open');
+  callTimer=setInterval(()=>{
+    callProgress+=2; document.getElementById('callProgress').style.width=callProgress+'%';
+    if(callProgress>22) document.getElementById('callStatus').textContent='Соединение... • P2P';
+    if(callProgress>60) document.getElementById('callStatus').textContent='Разговор • 00:'+String(Math.floor((callProgress-60)/2)).padStart(2,'0');
+    if(callProgress>=100){ clearInterval(callTimer); document.getElementById('callStatus').textContent='Звонок завершён • Защищено'; }
+  },120);
+}
+function closeCall(){ callModal.classList.remove('open'); clearInterval(callTimer); }
+document.getElementById('callBtn').addEventListener('click', ()=> openCall());
+document.getElementById('videoBtn').addEventListener('click', ()=> { openCall(); document.getElementById('callStatus').textContent='Видео вызов... • WebRTC'; toast('📹 Видео звонок'); });
+document.getElementById('endCall').addEventListener('click', closeCall);
+callModal.addEventListener('click', e=>{ if(e.target===callModal) closeCall(); });
+window.openCall=openCall;
+
+// voice play toggle
+window.togglePlay = (btn)=>{
+  const isPlaying = btn.dataset.play==='1';
+  if(isPlaying){ btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`; btn.dataset.play='0'; }
+  else { btn.innerHTML=`<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>`; btn.dataset.play='1'; toast('▶️ Воспроизведение голосового 0:12'); setTimeout(()=>{ btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`; btn.dataset.play='0'; },1800); }
+};
+document.getElementById('moreBtn').addEventListener('click', ()=> toast('⋯ Меню чата: закрепить, очистить, заблокировать'));
+
+// initial mobile state
+if(window.innerWidth<=860){
+  document.getElementById('centerPanel').classList.add('hide-mobile');
+}
+renderAll();
+updateComposer();
+
+// persist draft?
+msgInput.focus();
+</script>
+</body>
+</html>
