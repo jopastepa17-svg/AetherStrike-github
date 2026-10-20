@@ -1,0 +1,8 @@
+ℹ️ DATABASE_URL empty → JSON fallback (backend/db.json)
+
+💜 OMNIX backend running on http://0.0.0.0:3001
+   Frontend: http://localhost:3001/
+   WS: ws://localhost:3001
+   Health: http://localhost:3001/api/health
+
+   DB: JSON fallback at backend/db.json (set DATABASE_URL to use Postgres)
